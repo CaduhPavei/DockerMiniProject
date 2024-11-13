@@ -23,4 +23,74 @@ public class Clientes extends EntityId{
     @Column(name = "data_cadastro")
     private LocalDateTime dataCadastro;
 
+    public Clientes() {}
+
+    public Clientes(String nome, String sobrenome, String email, Sexo sexo, LocalDate dataNascimento, LocalDateTime dataCadastro) {
+        this.nome = nome;
+        this.sobrenome = sobrenome;
+        this.email = email;
+        this.sexo = sexo;
+        this.dataNascimento = dataNascimento;
+        this.dataCadastro = dataCadastro;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getSobrenome() {
+        return sobrenome;
+    }
+
+    public void setSobrenome(String sobrenome) {
+        this.sobrenome = sobrenome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Sexo getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(Sexo sexo) {
+        this.sexo = sexo;
+    }
+
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+
+    public LocalDateTime getDataCadastro() {
+        return dataCadastro;
+    }
+
+    public void setDataCadastro(LocalDateTime dataCadastro) {
+        this.dataCadastro = dataCadastro;
+    }
+
+    @Override
+    public String toString() {
+        return "Clientes{" +
+                "nome='" + nome + '\'' +
+                ", sobrenome='" + sobrenome + '\'' +
+                ", email='" + email + '\'' +
+                ", sexo=" + sexo +
+                ", dataNascimento=" + dataNascimento +
+                ", dataCadastro=" + dataCadastro +
+                '}';
+    }
 }
