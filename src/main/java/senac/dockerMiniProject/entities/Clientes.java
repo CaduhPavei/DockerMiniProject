@@ -2,6 +2,8 @@ package senac.dockerMiniProject.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import senac.dockerMiniProject.entities.enums.Sexo;
 
 import java.time.LocalDate;
@@ -17,21 +19,21 @@ public class Clientes extends EntityId{
     @Column(name = "email", nullable = false)
     private String email;
     @Column(name = "sexo")
+    @Enumerated(EnumType.STRING)
     private Sexo sexo;
     @Column(name = "data_nascimento")
     private LocalDate dataNascimento;
-    @Column(name = "data_cadastro")
+    @Column(name = "data_cadastro", updatable = false)
     private LocalDateTime dataCadastro;
 
     public Clientes() {}
 
-    public Clientes(String nome, String sobrenome, String email, Sexo sexo, LocalDate dataNascimento, LocalDateTime dataCadastro) {
+    public Clientes(String nome, String sobrenome, String email, Sexo sexo, LocalDate dataNascimento) {
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.email = email;
         this.sexo = sexo;
         this.dataNascimento = dataNascimento;
-        this.dataCadastro = dataCadastro;
     }
 
     public String getNome() {

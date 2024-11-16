@@ -14,7 +14,6 @@ public class ClientesDto {
     private String email;
     private Sexo sexo;
     private LocalDate dataNascimento;
-    private LocalDateTime dataCadastro;
 
     public ClientesDto(){}
 
@@ -24,7 +23,6 @@ public class ClientesDto {
         this.email = email;
         this.sexo = sexo;
         this.dataNascimento = dataNascimento;
-        this.dataCadastro = dataCadastro;
     }
 
     public String getNome() {
@@ -67,14 +65,6 @@ public class ClientesDto {
         this.dataNascimento = dataNascimento;
     }
 
-    public LocalDateTime getDataCadastro() {
-        return dataCadastro;
-    }
-
-    public void setDataCadastro(LocalDateTime dataCadastro) {
-        this.dataCadastro = dataCadastro;
-    }
-
     public static ClientesDto fromEntity(Clientes clientes){
         return new ClientesDto(
                 clientes.getNome(),
@@ -101,7 +91,6 @@ public class ClientesDto {
         clientes.setEmail(this.email);
         clientes.setSexo(this.sexo);
         clientes.setDataNascimento(this.dataNascimento);
-        clientes.setDataCadastro(this.dataCadastro);
         return clientes;
     }
 
