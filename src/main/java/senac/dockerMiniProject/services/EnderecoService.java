@@ -34,6 +34,12 @@ public class EnderecoService {
         if (enderecoDto.getUf() == null || enderecoDto.getUf().trim().isEmpty()) {
             throw new ValidationException("O campo 'uf' é obrigatório.");
         }
+        Long clienteId = enderecoDto.getCliente().getId();
+        List<Endereco> enderecosDoCliente = enderecoRepository.findByClienteId(clienteId);
+
+        if (enderecosDoCliente.size() >= 5) {
+            throw new ValidationException("O cliente já possui o limite máximo de 5 endereços.");
+        }
 
         Endereco enderecos = new Endereco(
                 enderecoDto.getRua(),

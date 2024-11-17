@@ -40,6 +40,13 @@ public class ClientesService {
         if (!Sexo.isValid(clientesDTO.getSexo())) {
             throw new ValidationException("O valor de 'sexo' é inválido. Valores permitidos: MASCULINO, FEMININO, NÃOINFORMADO, OUTROS.");
         }
+        final Clientes cliente = getClientes(clientesDTO);
+
+        clientesRepository.save(cliente);
+        return ResponseEntity.ok(cliente);
+    }
+
+    private static Clientes getClientes(ClientesDto clientesDTO) {
         Sexo sexo = clientesDTO.getSexo() != null ? clientesDTO.getSexo() : Sexo.NÃO_INFORMADO;
 
         Clientes cliente = new Clientes(
@@ -56,9 +63,7 @@ public class ClientesService {
             }
             cliente.setEnderecos(clientesDTO.getEnderecos());
         }
-
-        clientesRepository.save(cliente);
-        return ResponseEntity.ok(cliente);
+        return cliente;
     }
 
     public ResponseEntity<Clientes> update(ClientesDto clientesDTO, Long id) {
