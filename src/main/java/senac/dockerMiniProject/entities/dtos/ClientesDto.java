@@ -1,5 +1,6 @@
-package senac.dockerMiniProject.controllers.dtos;
+package senac.dockerMiniProject.entities.dtos;
 import senac.dockerMiniProject.entities.Clientes;
+import senac.dockerMiniProject.entities.Endereco;
 import senac.dockerMiniProject.entities.enums.Sexo;
 
 import java.time.LocalDate;
@@ -14,15 +15,17 @@ public class ClientesDto {
     private String email;
     private Sexo sexo;
     private LocalDate dataNascimento;
+    private List<Endereco> enderecos = new ArrayList<>();
 
-    public ClientesDto(){}
+    public ClientesDto(String nome, String sobrenome, String email, Sexo sexo, LocalDate dataNascimento, LocalDateTime dataCadastro, List<Endereco> enderecos){}
 
-    public ClientesDto(String nome, String sobrenome, String email, Sexo sexo, LocalDate dataNascimento, LocalDateTime dataCadastro) {
+    public ClientesDto(String nome, String sobrenome, String email, Sexo sexo, LocalDate dataNascimento, List<Endereco> enderecos) {
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.email = email;
         this.sexo = sexo;
         this.dataNascimento = dataNascimento;
+        this.enderecos = enderecos;
     }
 
     public String getNome() {
@@ -65,6 +68,14 @@ public class ClientesDto {
         this.dataNascimento = dataNascimento;
     }
 
+    public List<Endereco> getEnderecos() {
+        return enderecos;
+    }
+
+    public void setEnderecos(List<Endereco> enderecos) {
+        this.enderecos = enderecos;
+    }
+
     public static ClientesDto fromEntity(Clientes clientes){
         return new ClientesDto(
                 clientes.getNome(),
@@ -72,11 +83,12 @@ public class ClientesDto {
                 clientes.getEmail(),
                 clientes.getSexo(),
                 clientes.getDataNascimento(),
-                clientes.getDataCadastro()
+                clientes.getDataCadastro(),
+                clientes.getEnderecos()
         );
     }
 
-    public static List<ClientesDto> fromEntituList(List<Clientes> clientes){
+    public static List<ClientesDto> fromEntityList(List<Clientes> clientes){
         List<ClientesDto> clientesDtoList = new ArrayList<>();
         for (Clientes cliente : clientes) {
             clientesDtoList.add(fromEntity(cliente));
@@ -91,6 +103,7 @@ public class ClientesDto {
         clientes.setEmail(this.email);
         clientes.setSexo(this.sexo);
         clientes.setDataNascimento(this.dataNascimento);
+        clientes.setEnderecos(this.enderecos);
         return clientes;
     }
 

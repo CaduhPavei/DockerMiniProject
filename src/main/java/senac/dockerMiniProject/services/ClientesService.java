@@ -3,7 +3,7 @@ package senac.dockerMiniProject.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import senac.dockerMiniProject.controllers.dtos.ClientesDto;
+import senac.dockerMiniProject.entities.dtos.ClientesDto;
 import senac.dockerMiniProject.enterprise.ValidationException;
 import senac.dockerMiniProject.entities.Clientes;
 import senac.dockerMiniProject.entities.enums.Sexo;
@@ -15,7 +15,6 @@ import java.util.Optional;
 @Service
 public class ClientesService {
 
-    private Sexo sexo;
     @Autowired
     private ClientesRepository clientesRepository;
 
@@ -24,17 +23,17 @@ public class ClientesService {
     }
 
     public ResponseEntity<?> create(ClientesDto clientesDTO) {
+
         if (clientesDTO.getNome() == null || clientesDTO.getNome().trim().isEmpty()) {
             throw new ValidationException("O campo 'nome' é obrigatório.");
         }
         if (clientesDTO.getSobrenome() == null || clientesDTO.getSobrenome().trim().isEmpty()) {
             throw new ValidationException("O campo 'sobrenome' é obrigatório.");
         }
-
         if (clientesDTO.getEmail() == null || clientesDTO.getEmail().trim().isEmpty()) {
             throw new ValidationException("O campo 'email' é obrigatório.");
         }
-        if (clientesRepository.findByEmail(clientesDTO.getEmail()).isPresent()){
+        if (clientesRepository.findByEmail(clientesDTO.getEmail()).isPresent()) {
             throw new ValidationException("O e-mail informado já está em uso.");
         }
 
@@ -43,7 +42,7 @@ public class ClientesService {
         }
         Sexo sexo = clientesDTO.getSexo() != null ? clientesDTO.getSexo() : Sexo.NÃO_INFORMADO;
 
-        Clientes clientes = new Clientes(
+        Clientes cliente = new Clientes(
                 clientesDTO.getNome(),
                 clientesDTO.getSobrenome(),
                 clientesDTO.getEmail(),
@@ -51,47 +50,55 @@ public class ClientesService {
                 clientesDTO.getDataNascimento()
         );
 
-        clientesRepository.save(clientes);
-        return ResponseEntity.ok(clientes);
-    }
-
-    public List<Clientes> findAll() {
-        List<Clientes> clientes = clientesRepository.findAll();
-        return clientes;
-    }
-
-    public ResponseEntity<Clientes> findById(Long id) {
-        Optional<Clientes> clientes = clientesRepository.findById(id);
-        if (clientes.isPresent()) {
-            return ResponseEntity.ok(clientes.get());
-        } else {
-            return ResponseEntity.notFound().build();
+        if (clientesDTO.getEnderecos() != null && !clientesDTO.getEnderecos().isEmpty()) {
+            if (clientesDTO.getEnderecos().size() > 5) {
+                throw new ValidationException("Não é permitido cadastrar mais de 5 endereços.");
+            }
+            cliente.setEnderecos(clientesDTO.getEnderecos());
         }
+
+        clientesRepository.save(cliente);
+        return ResponseEntity.ok(cliente);
     }
 
     public ResponseEntity<Clientes> update(ClientesDto clientesDTO, Long id) {
-        Optional<Clientes> optionalClientes = clientesRepository.findById(id);
+        Optional<Clientes> optionalCliente = clientesRepository.findById(id);
 
-        if (optionalClientes.isPresent()) {
-            Clientes clientes = optionalClientes.get();
-            clientes.setNome(clientesDTO.getNome());
-            clientes.setSobrenome(clientesDTO.getSobrenome());
-            clientes.setEmail(clientesDTO.getEmail());
-            clientes.setSexo(clientesDTO.getSexo());
-            clientes.setDataNascimento(clientesDTO.getDataNascimento());
+        if (optionalCliente.isPresent()) {
+            Clientes cliente = optionalCliente.get();
 
-            clientesRepository.save(clientes);
-            return ResponseEntity.ok(clientes);
+            cliente.setNome(clientesDTO.getNome());
+            cliente.setSobrenome(clientesDTO.getSobrenome());
+            cliente.setEmail(clientesDTO.getEmail());
+            cliente.setSexo(clientesDTO.getSexo());
+
+            if (clientesDTO.getEnderecos() != null && !clientesDTO.getEnderecos().isEmpty()) {
+                if (clientesDTO.getEnderecos().size() > 5) {
+                    throw new ValidationException("Não é permitido cadastrar mais de 5 endereços.");
+                }
+                cliente.setEnderecos(clientesDTO.getEnderecos());
+            }
+
+            clientesRepository.save(cliente);
+            return ResponseEntity.ok(cliente);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    public ResponseEntity<Void> delete(Long id) {
-        Optional<Clientes> optionalClientes = clientesRepository.findById(id);
+    public List<Clientes> findAll() {
+        return clientesRepository.findAll();
+    }
 
-        if (optionalClientes.isPresent()) {
-            clientesRepository.delete(optionalClientes.get());
+    public ResponseEntity<Clientes> findById(Long id) {
+        Optional<Clientes> cliente = clientesRepository.findById(id);
+        return cliente.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    public ResponseEntity<Void> delete(Long id) {
+        Optional<Clientes> cliente = clientesRepository.findById(id);
+        if (cliente.isPresent()) {
+            clientesRepository.delete(cliente.get());
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();

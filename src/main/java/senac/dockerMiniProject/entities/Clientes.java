@@ -1,15 +1,15 @@
 package senac.dockerMiniProject.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import senac.dockerMiniProject.entities.enums.Sexo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@Table(name = "clientes")
 public class Clientes extends EntityId{
 
     @Column(name = "nome", nullable = false)
@@ -25,6 +25,8 @@ public class Clientes extends EntityId{
     private LocalDate dataNascimento;
     @Column(name = "data_cadastro", updatable = false)
     private LocalDateTime dataCadastro;
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Endereco> enderecos = new ArrayList<>();
 
     public Clientes() {}
 
@@ -84,6 +86,14 @@ public class Clientes extends EntityId{
         this.dataCadastro = dataCadastro;
     }
 
+    public List<Endereco> getEnderecos() {
+        return enderecos;
+    }
+
+    public void setEnderecos(List<Endereco> enderecos) {
+        this.enderecos = enderecos;
+    }
+
     @Override
     public String toString() {
         return "Clientes{" +
@@ -93,6 +103,7 @@ public class Clientes extends EntityId{
                 ", sexo=" + sexo +
                 ", dataNascimento=" + dataNascimento +
                 ", dataCadastro=" + dataCadastro +
+                ", enderecos=" + enderecos +
                 '}';
     }
 }
