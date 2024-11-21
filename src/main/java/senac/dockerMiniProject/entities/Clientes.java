@@ -1,17 +1,24 @@
 package senac.dockerMiniProject.entities;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import senac.dockerMiniProject.entities.enums.Sexo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Table(name = "clientes")
-public class Clientes extends EntityId{
+public class Clientes extends EntityId implements UserDetails {
 
+    @Column(name = "usuario", nullable = false)
+    private String username;
+    @Column(name = "senha", nullable = false)
+    private String senha;
     @Column(name = "nome", nullable = false)
     private String nome;
     @Column(name = "sobrenome", nullable = false)
@@ -28,14 +35,38 @@ public class Clientes extends EntityId{
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Endereco> enderecos = new ArrayList<>();
 
-    public Clientes() {}
+    public Clientes() {
+    }
 
-    public Clientes(String nome, String sobrenome, String email, Sexo sexo, LocalDate dataNascimento) {
+    public Clientes(String username, String senha, String nome, String sobrenome, String email, Sexo sexo, LocalDate dataNascimento, LocalDateTime dataCadastro, List<Endereco> enderecos) {
+        this.username = username;
+        this.senha = senha;
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.email = email;
         this.sexo = sexo;
         this.dataNascimento = dataNascimento;
+        this.dataCadastro = dataCadastro;
+        this.enderecos = enderecos;
+    }
+
+    public Clientes(String nome, String sobrenome, String email, Sexo sexo, LocalDate dataNascimento) {
+    }
+
+    public String getusername() {
+        return username;
+    }
+
+    public void setusername(String username) {
+        this.username = username;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 
     public String getNome() {
@@ -95,15 +126,17 @@ public class Clientes extends EntityId{
     }
 
     @Override
-    public String toString() {
-        return "Clientes{" +
-                "nome='" + nome + '\'' +
-                ", sobrenome='" + sobrenome + '\'' +
-                ", email='" + email + '\'' +
-                ", sexo=" + sexo +
-                ", dataNascimento=" + dataNascimento +
-                ", dataCadastro=" + dataCadastro +
-                ", enderecos=" + enderecos +
-                '}';
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public String getPassword() {
+        return senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
     }
 }

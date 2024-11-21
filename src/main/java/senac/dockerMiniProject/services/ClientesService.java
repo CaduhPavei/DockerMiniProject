@@ -2,8 +2,12 @@ package senac.dockerMiniProject.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import senac.dockerMiniProject.entities.dtos.ClientesDto;
+import senac.dockerMiniProject.configs.TokenService;
+import senac.dockerMiniProject.dtos.LoginDto;
 import senac.dockerMiniProject.enterprise.ValidationException;
 import senac.dockerMiniProject.entities.Clientes;
 import senac.dockerMiniProject.entities.enums.Sexo;
@@ -17,12 +21,16 @@ public class ClientesService {
 
     @Autowired
     private ClientesRepository clientesRepository;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private TokenService tokenService;
 
     public ClientesService(ClientesRepository clientesRepository) {
         this.clientesRepository = clientesRepository;
     }
 
-    public ResponseEntity<?> create(ClientesDto clientesDTO) {
+    public ResponseEntity<?> create(Clientes clientesDTO) {
 
         if (clientesDTO.getNome() == null || clientesDTO.getNome().trim().isEmpty()) {
             throw new ValidationException("O campo 'nome' é obrigatório.");
@@ -40,13 +48,14 @@ public class ClientesService {
         if (!Sexo.isValid(clientesDTO.getSexo())) {
             throw new ValidationException("O valor de 'sexo' é inválido. Valores permitidos: MASCULINO, FEMININO, NÃOINFORMADO, OUTROS.");
         }
-        final Clientes cliente = getClientes(clientesDTO);
 
-        clientesRepository.save(cliente);
-        return ResponseEntity.ok(cliente);
+        clientesDTO.setSenha(new BCryptPasswordEncoder().encode(clientesDTO.getPassword()));
+
+        clientesRepository.save(clientesDTO);
+        return ResponseEntity.ok(clientesDTO);
     }
 
-    private static Clientes getClientes(ClientesDto clientesDTO) {
+    private static Clientes getClientes(Clientes clientesDTO) {
         Sexo sexo = clientesDTO.getSexo() != null ? clientesDTO.getSexo() : Sexo.NÃO_INFORMADO;
 
         Clientes cliente = new Clientes(
@@ -66,7 +75,7 @@ public class ClientesService {
         return cliente;
     }
 
-    public ResponseEntity<Clientes> update(ClientesDto clientesDTO, Long id) {
+    public ResponseEntity<Clientes> update(Clientes clientesDTO, Long id) {
         Optional<Clientes> optionalCliente = clientesRepository.findById(id);
 
         if (optionalCliente.isPresent()) {
@@ -109,4 +118,11 @@ public class ClientesService {
             return ResponseEntity.notFound().build();
         }
     }
+    public String login(LoginDto loginDto) throws Exception {
+        var usernamePassword = new UsernamePasswordAuthenticationToken(loginDto.usuario(), loginDto.senha());
+        var auth = authenticationManager.authenticate(usernamePassword);
+        var token = tokenService.gerarToken((Clientes) auth.getPrincipal());
+        return token;
+    }
+
 }

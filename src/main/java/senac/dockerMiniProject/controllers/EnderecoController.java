@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import senac.dockerMiniProject.entities.Endereco;
-import senac.dockerMiniProject.entities.dtos.EnderecoDto;
+import senac.dockerMiniProject.dtos.EnderecoDto;
 import senac.dockerMiniProject.services.EnderecoService;
 
 import java.util.List;

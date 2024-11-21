@@ -1,4 +1,4 @@
-package senac.dockerMiniProject.entities.dtos;
+package senac.dockerMiniProject.dtos;
 
 import senac.dockerMiniProject.entities.Clientes;
 import senac.dockerMiniProject.entities.Endereco;

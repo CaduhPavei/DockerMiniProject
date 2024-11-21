@@ -3,15 +3,16 @@ package senac.dockerMiniProject.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import senac.dockerMiniProject.enterprise.ValidationException;
-import senac.dockerMiniProject.entities.Clientes;
 import senac.dockerMiniProject.entities.Endereco;
-import senac.dockerMiniProject.entities.dtos.EnderecoDto;
+import senac.dockerMiniProject.dtos.EnderecoDto;
 import senac.dockerMiniProject.repositories.EnderecoRepository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class EnderecoService {
 
     @Autowired
