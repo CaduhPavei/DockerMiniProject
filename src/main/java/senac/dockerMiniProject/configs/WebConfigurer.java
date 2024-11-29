@@ -26,6 +26,7 @@ public class WebConfigurer {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST,"api/clientes/register").permitAll()
+                        .requestMatchers(HttpMethod.GET,"api/clientes/lista").permitAll()
                         .requestMatchers(HttpMethod.POST,"api/clientes/login").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)    

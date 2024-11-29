@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import senac.dockerMiniProject.entities.Clientes;
+import senac.dockerMiniProject.repositories.ClientesRepository;
 import senac.dockerMiniProject.services.ClientesService;
 
 import java.util.List;
@@ -12,7 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/clientes")
 public class ClientesController extends AbstractController{
-
     @Autowired
     private ClientesService clientesService;
 
@@ -22,7 +22,7 @@ public class ClientesController extends AbstractController{
         return ResponseEntity.status(HttpStatus.CREATED).body(cliente);
     }
 
-    @GetMapping("/cliestes/lista")
+    @GetMapping("/lista")
     public ResponseEntity<List<Clientes>> getAll() {
         List<Clientes> all = clientesService.findAll();
         return ResponseEntity.ok(all);
